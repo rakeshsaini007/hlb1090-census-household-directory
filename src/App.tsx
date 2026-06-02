@@ -48,7 +48,6 @@ export default function App() {
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [plotFilter, setPlotFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('lineAsc');
   const [drillDownStat, setDrillDownStat] = useState<string | null>(null);
 
@@ -269,7 +268,7 @@ export default function App() {
       houseNumber: String(maxLineNum + 1).padStart(4, '0'),
       residentialStatus: "आवासीय",
       householdUse: "",
-      plotNumber: String(461 - Math.floor(maxLineNum / 3)),
+      plotNumber: "",
       headName: "",
       mobileNumber: "",
       selfCensusId: ""
@@ -311,11 +310,6 @@ export default function App() {
     }
   };
 
-  // Extract unique plot numbers for plot dropdown filters
-  const uniquePlots = Array.from(
-    new Set(records.map(r => r.plotNumber).filter(Boolean))
-  ).sort();
-
   // Filters and Searching Logic
   const filteredRecords = records.filter(record => {
     // Search query matches
@@ -324,7 +318,6 @@ export default function App() {
       record.lineNumber.toLowerCase().includes(query) ||
       record.buildingNumber.toLowerCase().includes(query) ||
       record.houseNumber.toLowerCase().includes(query) ||
-      record.plotNumber.toLowerCase().includes(query) ||
       record.headName.toLowerCase().includes(query) ||
       record.mobileNumber.includes(query) ||
       record.selfCensusId.toLowerCase().includes(query) ||
@@ -374,10 +367,7 @@ export default function App() {
       }
     }
 
-    // Filter by Plot
-    const matchesPlot = plotFilter === 'all' || record.plotNumber === plotFilter;
-
-    return matchesSearch && matchesDrillDown && matchesStatus && matchesPlot;
+    return matchesSearch && matchesDrillDown && matchesStatus;
   });
 
   // Sorting
@@ -386,8 +376,6 @@ export default function App() {
       return a.lineNumber.localeCompare(b.lineNumber);
     } else if (sortBy === 'lineDesc') {
       return b.lineNumber.localeCompare(a.lineNumber);
-    } else if (sortBy === 'plotAsc') {
-      return a.plotNumber.localeCompare(b.plotNumber);
     } else if (sortBy === 'bldgAsc') {
       return parseInt(a.buildingNumber || '0') - parseInt(b.buildingNumber || '0');
     }
@@ -458,7 +446,7 @@ export default function App() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="खोजें: लाईन क्रमांक, मुखिया नाम, मोबाइल, प्लॉट, मकान..."
+                    placeholder="खोजें: लाईन क्रमांक, मुखिया नाम, मोबाइल, मकान..."
                     className="w-full pl-10 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-100 placeholder-slate-400 font-sans"
                   />
                   {searchQuery && (
@@ -495,21 +483,6 @@ export default function App() {
                     </select>
                   </div>
 
-                  {/* Plot Filter */}
-                  <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
-                    <span className="text-[11px] text-slate-400 font-medium whitespace-nowrap">प्लॉट:</span>
-                    <select
-                      value={plotFilter}
-                      onChange={(e) => setPlotFilter(e.target.value)}
-                      className="w-full sm:w-auto bg-slate-50 border border-slate-200 py-1.5 px-2.5 rounded-lg text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-indigo-100"
-                    >
-                      <option value="all">सभी प्लॉट</option>
-                      {uniquePlots.map(plot => (
-                        <option key={plot} value={plot}>{plot}</option>
-                      ))}
-                    </select>
-                  </div>
-
                   {/* Sorting Filter */}
                   <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
                     <span className="text-[11px] text-slate-400 font-medium whitespace-nowrap">क्रम:</span>
@@ -520,7 +493,6 @@ export default function App() {
                     >
                       <option value="lineAsc">लाईन क्रमांक (बढ़ते)</option>
                       <option value="lineDesc">लाईन क्रमांक (घटते)</option>
-                      <option value="plotAsc">प्लॉट नम्बर से</option>
                       <option value="bldgAsc">भवन नम्बर से</option>
                     </select>
                   </div>
@@ -551,7 +523,6 @@ export default function App() {
                     onClick={() => {
                       setSearchQuery('');
                       setStatusFilter('all');
-                      setPlotFilter('all');
                     }}
                     className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs transition-colors cursor-pointer"
                   >
@@ -684,21 +655,6 @@ export default function App() {
                 </div>
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                  {/* Plot Filter */}
-                  <div className="flex items-center gap-1.5 flex-1 md:flex-initial">
-                    <span className="text-[11px] text-slate-400 font-medium whitespace-nowrap">प्लॉट:</span>
-                    <select
-                      value={plotFilter}
-                      onChange={(e) => setPlotFilter(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 py-1.5 px-2.5 rounded-lg text-xs font-medium text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-indigo-100"
-                    >
-                      <option value="all">सभी प्लॉट</option>
-                      {uniquePlots.map(plot => (
-                        <option key={plot} value={plot}>{plot}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
                   {/* Sort Filter */}
                   <div className="flex items-center gap-1.5 flex-1 md:flex-initial">
                     <span className="text-[11px] text-slate-400 font-medium whitespace-nowrap">क्रम:</span>
@@ -709,7 +665,6 @@ export default function App() {
                     >
                       <option value="lineAsc">लाईन क्रमांक (बढ़ते)</option>
                       <option value="lineDesc">लाईन क्रमांक (घटते)</option>
-                      <option value="plotAsc">प्लॉट नम्बर से</option>
                       <option value="bldgAsc">भवन नम्बर से</option>
                     </select>
                   </div>
@@ -732,7 +687,6 @@ export default function App() {
                   <button
                     onClick={() => {
                       setSearchQuery('');
-                      setPlotFilter('all');
                     }}
                     className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs transition-colors cursor-pointer"
                   >

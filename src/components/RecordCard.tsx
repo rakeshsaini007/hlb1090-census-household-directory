@@ -251,14 +251,7 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onSave }) => {
                     {record.houseNumber || '-'}
                   </div>
                 </div>
-                <div>
-                  <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">प्लॉट नम्बर / Plot</div>
-                  <div className="text-sm font-semibold text-slate-700 flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    {record.plotNumber || '-'}
-                  </div>
-                </div>
-                <div>
+                <div className="col-span-2">
                   <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">परिवार क्रमांक/वास्तविक उपयोग</div>
                   <div className="text-xs font-semibold text-indigo-600 truncate mt-0.5" title={record.householdUse}>
                     {record.householdUse || <span className="text-slate-400 font-normal italic">कोई नहीं</span>}
@@ -414,7 +407,7 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onSave }) => {
                     className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed select-none focus:outline-hidden"
                   />
                 </div>
-                <div>
+                <div className="col-span-2">
                   <label className="text-[10px] text-slate-500 font-semibold block mb-1">वर्ग / residentialStatus</label>
                   <select
                     value={residentialStatus}
@@ -427,15 +420,6 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onSave }) => {
                     <option value="DELETED">DELETED</option>
                     <option value="LOCKED">LOCKED</option>
                   </select>
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-500 font-semibold block mb-1">प्लॉट नम्बर / Plot</label>
-                  <input
-                    type="text"
-                    disabled
-                    value={plotNumber}
-                    className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed select-none focus:outline-hidden"
-                  />
                 </div>
               </div>
 
